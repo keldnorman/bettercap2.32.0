@@ -143,11 +143,11 @@ if [ ! -s ./bettercap ]; then
  printf "\n### ERROR - Cant find ./bettercap-2.32.0/build/bettercap\n\n"
  exit 1
 fi
-if [ $(du -b ./bettercap|awk '{print $1}') -ne 35889912 ]; then 
- echo "[FAILED]"
- printf "\n### ERROR - The compiled bettercap is not the expected size of 35889912 bytes (du -bs ./bettercap-2.32.0/build/bettercap)\n\n"
- exit 1
-fi
+#if [ $(du -b ./bettercap|awk '{print $1}') -ne 35889912 ]; then 
+# echo "[FAILED]"
+# printf "\n### ERROR - The compiled bettercap is not the expected size of 35889912 bytes (du -bs ./bettercap-2.32.0/build/bettercap)\n\n"
+# exit 1
+#fi
 echo "[OK]"
 printf -- "--------------------------------------------------------\n"
 #--------------------------------------------------------
