@@ -127,8 +127,9 @@ printf -- "--------------------------------------------------------\n"
 printf "%-50s\n" "Compiling Bettercap version 2.32.0"
 printf -- "--------------------------------------------------------\n"
 ./build.sh all
-if [ ! -s ./build/bettercap_linux_amd64_2.32.0.zip ]; then 
- printf "\n### ERROR - Compile failed (cant find ./bettercap-2.32.0/build/bettercap_linux_amd64_2.32.0.zip)\n\n"
+if [ ! -s ./bettercap ]; then               
+ echo "[FAILED]"
+ printf "\n### ERROR - The compiled bettercap is missing or 0 bytes\n\n"
  exit 1
 fi
 #--------------------------------------------------------
@@ -154,18 +155,22 @@ printf -- "--------------------------------------------------------\n"
 # Download bettercap web interface
 #--------------------------------------------------------
 printf "%-50s\n\n" "Downloading Bettercap http userinterface"
-./bettercap -eval "caplets.update; ui.update; q" 
+./bettercap -eval "caplets.update; ui.update; q"
 printf -- "--------------------------------------------------------\n"
-printf "%-50s\n" "Starting Bettercap.."
-printf -- "--------------------------------------------------------\n\n"
 printf "###################################################\n"
 printf "#                                                 #\n"
 printf "#   ::: The web interface can be found here :::   #\n"
 printf "#                                                 #\n"
-printf "#                 http://127.0.0.1                #\n"
+printf "#                http://127.0.0.1/                #\n"
 printf "#                                                 #\n"
 printf "#     Login is: \"user\" and Password is: \"pass\"    #\n"
 printf "#                                                 #\n"
 printf "###################################################\n"
-printf "\n# TIP: Next time just run: $(pwd)/bettercap -caplet http-ui\n\n"
+printf "\nChange the user and password in the file:\n"
+printf "\n/usr/local/share/bettercap/caplets/http-ui.cap\n"
+printf "\nNext time just run:\n"
+printf "\n$(pwd)/bettercap -caplet http-ui\n\n"
+printf -- "--------------------------------------------------------\n"
+printf "%-50s\n" "Starting Bettercap.."
+printf -- "--------------------------------------------------------\n"
 ./bettercap -caplet http-ui
