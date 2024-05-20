@@ -13,4 +13,4 @@ Then just go to http://127.0.0.1 and login with the user and password : user / p
 Change the password and user by editing the file called:
 ```/usr/local/share/bettercap/caplets/http-ui.cap```
 
-![Screenshot of Bettercap 2.32.0](https://github.com/keldnorman/bettercap2.32.0/blob/master/img/bettercap2.32.0.png)
+![Screenshot of Bettercap 2.32.0](https://github.com/keldnorman/bettercap2.32.0/blob/main/bettercap2.32.0.png?raw=true)
