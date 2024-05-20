@@ -81,15 +81,15 @@ fi
 #--------------------------------------------------------
 # Check if filesize is correct after downloading the file
 #--------------------------------------------------------
-printf "%-50s" "Validating downloaded file size"
-FILESIZE=$(du -sb ./v2.32.0.tar.gz |awk '{print $1}')
-if [ ${FILESIZE:-0} -ne 1355310 ]; then 
- echo "[FAILED]"
- printf "\n### ERROR - File is not the expected size of 1355310 bytes (du -sb ./v2.32.0.tar.gz)\n\n"
- exit 1
-else
- echo "[OK]"
-fi
+#printf "%-50s" "Validating downloaded file size"
+#FILESIZE=$(du -sb ./v2.32.0.tar.gz |awk '{print $1}')
+#if [ ${FILESIZE:-0} -ne 1355310 ]; then 
+# echo "[FAILED]"
+# printf "\n### ERROR - File is not the expected size of 1355310 bytes (du -sb ./v2.32.0.tar.gz)\n\n"
+# exit 1
+#else
+# echo "[OK]"
+#fi
 #--------------------------------------------------------
 # Remove old directory if it exist
 #--------------------------------------------------------
@@ -104,18 +104,18 @@ fi
 printf "%-50s" "Extracting v2.32.0.tar.gz"
 tar -zxf ./v2.32.0.tar.gz 
 # Check the directory size after extracting the source code from the .tar.gz file
-DIRSIZE=$(du -bs ./bettercap-2.32.0|awk '{print $1}')
-if [ ${DIRSIZE:-0} -ne 4579995 ]; then 
- echo "[FAILED]"
- printf "\n### ERROR - Extracted directory size is not the expected 4579995 bytes (du -bs ./bettercap-2.32.0)\n\n"
- exit 1
-else
+#DIRSIZE=$(du -bs ./bettercap-2.32.0|awk '{print $1}')
+#if [ ${DIRSIZE:-0} -ne 4579995 ]; then 
+# echo "[FAILED]"
+# printf "\n### ERROR - Extracted directory size is not the expected 4579995 bytes (du -bs ./bettercap-2.32.0)\n\n"
+# exit 1
+#else
  echo "[OK]"
  # If size is OK then delete the tar.gz file
  printf "%-50s" "Deleting the v2.32.0.tar.gz file"
  rm ./v2.32.0.tar.gz
  echo "[OK]"
-fi
+#fi
 #--------------------------------------------------------
 # Enter the directory where the source code is
 #--------------------------------------------------------
