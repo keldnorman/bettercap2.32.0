@@ -43,8 +43,8 @@ for CAP in ${CAP_DIR}/http-ui.cap ${CAP_DIR}/https-ui.cap; do
    exit 1
   fi
  fi
- sed -i 's/set api.rest.username user/set api.rest.username admin/'    ${CAP}
- sed -i 's/set api.rest.password pass/set api.rest.password fhs36x56/' ${CAP}
+ sed -i 's/set api.rest.username user/set api.rest.username user/'    ${CAP}
+ sed -i 's/set api.rest.password pass/set api.rest.password pass/' ${CAP}
 done
 #--------------------------------------------------
 # UNBLOCK WIFI
@@ -53,6 +53,7 @@ done
 #--------------------------------------------------
 # PREPARE WIFI
 #--------------------------------------------------
+echo "Alter wlans here..!!line 56"
 for WLAN in wlan1 wlan2; do
  iw ${WLAN} set monitor control >/dev/null 2>&1
  ifconfig ${WLAN} up >/dev/null 2>&1
@@ -64,7 +65,7 @@ service apache2 stop
 #--------------------------------------------------
 # DELAY START FIREFOX
 #--------------------------------------------------
-sleep 5 && /usr/sbin/runuser -u norman -- firefox http://127.0.0.1:80 &
+sleep 5 && /usr/sbin/runuser -u ${USER} -- firefox http://127.0.0.1:80 &
 firefoxpid=$!
 #--------------------------------------------------
 # TURN OFF LED (works after next boot)
@@ -75,10 +76,12 @@ fi
 #--------------------------------------------------
 # USE BEST WIFI FOR PROBING
 #--------------------------------------------------
+echo "SET WIFI line 79"
+WIFI="wlan1"
 if [ $(/usr/bin/lsusb|grep -c "0bda:8812") -ne 0 ]; then 
  WLAN="$(for WLAN in $(ls -d /sys/class/net/wlan*); do if [ $(udevadm info $WLAN|grep -c RTL8812AU) -ne 0 ]; then echo "$(basename $WLAN)";fi;done|head -1)"
  if [ ! -z "${WLAN}" ]; then 
-  WIFI="set wifi.interface wlan0; wifi.recon on"
+  WIFI="set wifi.interface ${WIFI}; wifi.recon on"
  fi
 fi
 #--------------------------------------------------
