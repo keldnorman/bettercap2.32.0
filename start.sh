@@ -94,9 +94,9 @@ done
 if command -v nmcli >/dev/null 2>&1; then
  if [ $(nmcli device show $adapter | grep GENERAL.STATE|tr -d '('|tr -d ')'|awk '{print $3}'|grep -c unmanaged) -ne 1 ]; then
   printf "\n%-50s" "Setting $adapter to be unmanaged" 
-  nmcli device set wlan2 managed no  
+  nmcli device set $adapter managed no  
   printf "[OK]\n\n"
-  trap 'nmcli device set wlan2 managed yes' exit
+  trap 'nmcli device set $adapter managed yes' exit
  fi
 fi
 #--------------------------------------------------
