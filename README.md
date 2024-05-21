@@ -1,6 +1,6 @@
 # bettercap2.32.0
 
-## Helper script to install Bettercap version 2.32.0
+## Helper script to install Bettercap version 2.32.0 on Kali 
 
 ```
 git clone https://github.com/keldnorman/bettercap2.32.0
@@ -16,7 +16,6 @@ Change the password and user by editing the file called:
 ![Screenshot of Bettercap 2.32.0](https://github.com/keldnorman/bettercap2.32.0/blob/main/bettercap2.32.0.png?raw=true)
 
 ```This is how the installation and compilation looks:
-
 # bash ./build_bettercap_2.32.0.sh
 
    @@@@@@                            @@@@@@   
