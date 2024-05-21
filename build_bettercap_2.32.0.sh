@@ -29,7 +29,9 @@ cat << "EOF"
 Bettercap version 2.32.0 Installer script 2024
 
 EOF
-
+#--------------------------------------------------------
+# Ensure we run as root
+#--------------------------------------------------------
 if [ ! ${UID} -eq 0 ]; then 
  printf "Run this as user root or with sudo in front\n\n"
  exit 1
@@ -71,10 +73,10 @@ if [ ! -s /usr/include/pcap.h ]; then
  fi
 fi
 # Install libusb-1.0-0-dev
-if [ $( dpkg -l libusb-1.0-0-dev|grep -c "^ii  libusb-1.0-0-dev" ) -eq 0 ]; then 
+if [ $( dpkg -l libusb-1.0-0-dev 2>/dev/null|grep -c "^ii  libusb-1.0-0-dev" ) -eq 0 ]; then 
  printf "%-50s" "Installing libusb-1.0-0-dev"
  apt-get update -y -qq > /dev/null 2>&1  && apt-get install -y -qq libusb-1.0-0-dev >/dev/null 2>&1
- if [ $( dpkg -l libusb-1.0-0-dev|grep -c "^ii  libusb-1.0-0-dev" ) -ne 0 ]; then 
+ if [ $( dpkg -l libusb-1.0-0-dev 2>/dev/null|grep -c "^ii  libusb-1.0-0-dev" ) -ne 0 ]; then 
   echo "[OK]"
  else
   echo "[FAILED]"
@@ -83,10 +85,10 @@ if [ $( dpkg -l libusb-1.0-0-dev|grep -c "^ii  libusb-1.0-0-dev" ) -eq 0 ]; then
 fi
 # Install libnetfilter-queue-dev
 if [ $(cat /etc/os-release |grep -c -i kali ) -ne 0 ]; then 
-if [ $(dpkg -l libnetfilter-queue-dev|grep -c "^ii  libnetfilter-queue-dev") -eq 0 ]; then
+if [ $(dpkg -l libnetfilter-queue-dev 2>/dev/null|grep -c "^ii  libnetfilter-queue-dev") -eq 0 ]; then
  printf "%-50s" "Installing libnetfilter-queue-dev"
  apt-get update -y -qq > /dev/null 2>&1  && apt-get install -y -qq wget >/dev/null 2>&1
- if [ $(dpkg -l libnetfilter-queue-dev|grep -c "^ii  libnetfilter-queue-dev") -ne 0 ]; then
+ if [ $(dpkg -l libnetfilter-queue-dev 2>/dev/null|grep -c "^ii  libnetfilter-queue-dev") -ne 0 ]; then
   echo "[OK]"
  else
   echo "[FAILED]"
