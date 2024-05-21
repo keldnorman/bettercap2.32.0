@@ -10,15 +10,14 @@ cat << "EOF"
 
 Try: --proxy \
      --proxy-module injecthtml \
-     --html-data "<img src='file://192.168.0.26/aaa/bbb.jpg'/>" \
-     -T 192.168.0.12
+     --html-data "<img src='file://10.0.0.67/aaa/bbb.jpg'/>" \
+     -T 10.0.0.33
 
 EOF
 #--------------------------------------------------
 # VARIABLES
 #--------------------------------------------------
-BETTERCAP="/usr/bin/bettercap"
-BETTERCAP="./bettercap-2.32.0/build/bettercap"
+BETTERCAP="/home/norman/bettercap2.32.0/bettercap-2.32.0/build/bettercap"
 #--------------------------------------------------
 # PRE 
 #--------------------------------------------------
@@ -43,7 +42,7 @@ for CAP in ${CAP_DIR}/http-ui.cap ${CAP_DIR}/https-ui.cap; do
    exit 1
   fi
  fi
- sed -i 's/set api.rest.username user/set api.rest.username user/'    ${CAP}
+ sed -i 's/set api.rest.username user/set api.rest.username user/' ${CAP}
  sed -i 's/set api.rest.password pass/set api.rest.password pass/' ${CAP}
 done
 #--------------------------------------------------
@@ -53,8 +52,7 @@ done
 #--------------------------------------------------
 # PREPARE WIFI
 #--------------------------------------------------
-echo "Alter wlans here..!!line 56"
-for WLAN in wlan1 wlan2; do
+for WLAN in $(iw dev | grep Interface | awk '{print $2}'); do
  iw ${WLAN} set monitor control >/dev/null 2>&1
  ifconfig ${WLAN} up >/dev/null 2>&1
 done
@@ -76,14 +74,22 @@ fi
 #--------------------------------------------------
 # USE BEST WIFI FOR PROBING
 #--------------------------------------------------
-echo "SET WIFI line 79"
-WIFI="wlan1"
-if [ $(/usr/bin/lsusb|grep -c "0bda:8812") -ne 0 ]; then 
- WLAN="$(for WLAN in $(ls -d /sys/class/net/wlan*); do if [ $(udevadm info $WLAN|grep -c RTL8812AU) -ne 0 ]; then echo "$(basename $WLAN)";fi;done|head -1)"
- if [ ! -z "${WLAN}" ]; then 
-  WIFI="set wifi.interface ${WIFI}; wifi.recon on"
- fi
+adapters=$(iw dev | grep Interface | awk '{print $2}')
+# Check if any adapters were found
+if [ -z "$adapters" ]; then
+ echo "No wireless adapters found."
+ exit 1
 fi
+# Display the list of adapters and prompt the user to choose one
+PS3="Please select a wireless adapter: "
+select adapter in $adapters; do
+ if [ -n "$adapter" ]; then
+  WIFI="set wifi.interface ${adapter}; wifi.recon on"
+  break
+ else
+  echo "Invalid selection. Please try again."
+ fi
+done
 #--------------------------------------------------
 # START WITH GPS IF PRESENT
 #--------------------------------------------------
