@@ -1,4 +1,4 @@
-/bin/bash
+#!/bin/bash
 # By Keld Norman, 2024  - Version 0.1
 clear
 #--------------------------------------------------------
