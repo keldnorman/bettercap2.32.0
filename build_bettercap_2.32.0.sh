@@ -1,5 +1,5 @@
 #!/bin/bash
-# By Keld Norman, 2024  - Version 0.1
+# By Keld Norman, 2024  - Version 0.2
 clear
 #--------------------------------------------------------
 # Banner for the 1337'ishness
@@ -72,6 +72,17 @@ if [ ! -s /usr/include/pcap.h ]; then
   exit 1
  fi
 fi
+# Install GoLang
+if [ $( dpkg -l golang-go 2>/dev/null|grep -c "^ii  golang-go") -eq 0 ]; then 
+ printf "%-50s" "Installing golang-go"
+ apt-get update -y -qq > /dev/null 2>&1  && apt-get install -y -qq golang-go >/dev/null 2>&1
+ if [ $( dpkg -l golang-go 2>/dev/null|grep -c "^ii  golang-go" ) -ne 0 ]; then 
+  echo "[OK]"
+ else
+  echo "[FAILED]"
+  exit 1
+ fi
+fi
 # Install libusb-1.0-0-dev
 if [ $( dpkg -l libusb-1.0-0-dev 2>/dev/null|grep -c "^ii  libusb-1.0-0-dev" ) -eq 0 ]; then 
  printf "%-50s" "Installing libusb-1.0-0-dev"
@@ -85,16 +96,16 @@ if [ $( dpkg -l libusb-1.0-0-dev 2>/dev/null|grep -c "^ii  libusb-1.0-0-dev" ) -
 fi
 # Install libnetfilter-queue-dev
 if [ $(cat /etc/os-release |grep -c -i kali ) -ne 0 ]; then 
-if [ $(dpkg -l libnetfilter-queue-dev 2>/dev/null|grep -c "^ii  libnetfilter-queue-dev") -eq 0 ]; then
- printf "%-50s" "Installing libnetfilter-queue-dev"
- apt-get update -y -qq > /dev/null 2>&1  && apt-get install -y -qq wget >/dev/null 2>&1
- if [ $(dpkg -l libnetfilter-queue-dev 2>/dev/null|grep -c "^ii  libnetfilter-queue-dev") -ne 0 ]; then
-  echo "[OK]"
- else
-  echo "[FAILED]"
-  exit 1
+ if [ $(dpkg -l libnetfilter-queue-dev 2>/dev/null|grep -c "^ii  libnetfilter-queue-dev") -eq 0 ]; then
+  printf "%-50s" "Installing libnetfilter-queue-dev"
+  apt-get update -y -qq > /dev/null 2>&1  && apt-get install -y -qq libnetfilter-queue-dev >/dev/null 2>&1
+  if [ $(dpkg -l libnetfilter-queue-dev 2>/dev/null|grep -c "^ii  libnetfilter-queue-dev") -ne 0 ]; then
+   echo "[OK]"
+  else
+   echo "[FAILED]"
+   exit 1
+  fi
  fi
-fi
 fi
 #--------------------------------------------------------
 # Download bettercap version 2.32.0
@@ -180,6 +191,21 @@ fi
 # exit 1
 #fi
 echo "[OK]"
+#--------------------------------------------------------
+# Stoppng apache if it is running
+#--------------------------------------------------------
+if [ $(dpkg -l apache2 2>/dev/null|grep -c "^ii  apache2 ") -ne 0 ]; then
+ if [ $(systemctl is-active apache2|grep -c ^active) -ne 0 ];   then 
+  printf "%-50s" "Stopping Apache (to free up port 80)"
+  systemctl stop apache2 >/dev/null 2>&1
+  sleep 1
+  if [ $(systemctl is-active apache2|grep -c ^active) -ne 0 ];   then 
+   echo "[FAILED]"
+   exit 1
+  fi 
+  echo "[OK]"
+ fi
+fi 
 printf -- "--------------------------------------------------------\n"
 #--------------------------------------------------------
 # Download bettercap web interface
