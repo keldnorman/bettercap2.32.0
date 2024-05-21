@@ -17,7 +17,7 @@ EOF
 #--------------------------------------------------
 # VARIABLES
 #--------------------------------------------------
-BETTERCAP="/home/norman/bettercap2.32.0/bettercap-2.32.0/build/bettercap"
+BETTERCAP="/data/source/Bettercap/bettercap2.32.0/bettercap-2.32.0/build/bettercap"
 #--------------------------------------------------
 # PRE 
 #--------------------------------------------------
@@ -35,10 +35,10 @@ fi
 CAP_DIR="/usr/local/share/bettercap/caplets"
 for CAP in ${CAP_DIR}/http-ui.cap ${CAP_DIR}/https-ui.cap; do
  if [ ! -s ${CAP} ]; then 
-  printf "\n - Updating the http GUI..\n" 
+  printf "\nUpdating the http GUI..\n" 
   /usr/bin/bettercap -eval "caplets.update; ui.update; q"
   if [ ! -s ${CAP} ]; then 
-   printf "\n ### ERROR - Cant find ${CAP}\n\n"
+   printf "\n### ERROR - Cant find ${CAP}\n\n"
    exit 1
   fi
  fi
@@ -63,8 +63,8 @@ service apache2 stop
 #--------------------------------------------------
 # DELAY START FIREFOX
 #--------------------------------------------------
-sleep 5 && /usr/sbin/runuser -u ${USER} -- firefox http://127.0.0.1:80 &
-firefoxpid=$!
+# sleep 5 && /usr/sbin/runuser -u ${USER} -- firefox http://127.0.0.1:80 &
+# firefoxpid=$!
 #--------------------------------------------------
 # TURN OFF LED (works after next boot)
 #--------------------------------------------------
@@ -90,6 +90,15 @@ select adapter in $adapters; do
   echo "Invalid selection. Please try again."
  fi
 done
+# Check if NetworkManager is installed
+if command -v nmcli >/dev/null 2>&1; then
+ if [ $(nmcli device show $adapter | grep GENERAL.STATE|tr -d '('|tr -d ')'|awk '{print $3}'|grep -c unmanaged) -ne 1 ]; then
+  printf "\n%-50s" "Setting $adapter to be unmanaged" 
+  nmcli device set wlan2 managed no  
+  printf "[OK]\n\n"
+  trap 'nmcli device set wlan2 managed yes' exit
+ fi
+fi
 #--------------------------------------------------
 # START WITH GPS IF PRESENT
 #--------------------------------------------------
