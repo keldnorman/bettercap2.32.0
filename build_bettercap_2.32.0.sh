@@ -1,4 +1,4 @@
-#!/bin/bash
+/bin/bash
 # By Keld Norman, 2024  - Version 0.1
 clear
 #--------------------------------------------------------
@@ -29,6 +29,11 @@ cat << "EOF"
 Bettercap version 2.32.0 Installer script 2024
 
 EOF
+
+if [ ! ${UID} -eq 0 ]; then 
+ printf "Run this as user root or with sudo in front\n\n"
+ exit 1
+fi
 #--------------------------------------------------------
 # PRE INSTALL UTILS NEEDED
 #--------------------------------------------------------
@@ -54,7 +59,30 @@ if [ ! -x /usr/bin/unzip ]; then
   exit 1
  fi
 fi
+# Install libpcap0.8-dev
+if [ ! -s /usr/include/pcap.h ]; then
+ printf "%-50s" "Installing libcap0.8-dev"
+ apt-get update -y -qq > /dev/null 2>&1  && apt-get install -y -qq libpcap0.8-dev >/dev/null 2>&1
+ if [ ! -s /usr/include/pcap.h ]; then
+  echo "[OK]"
+ else
+  echo "[FAILED]"
+  exit 1
+ fi
+fi
+# Install libusb-1.0-0-dev
+if [ $( dpkg -l libusb-1.0-0-dev|grep -c "^ii  libusb-1.0-0-dev" ) -eq 0 ]; then 
+ printf "%-50s" "Installing libusb-1.0-0-dev"
+ apt-get update -y -qq > /dev/null 2>&1  && apt-get install -y -qq libusb-1.0-0-dev >/dev/null 2>&1
+ if [ $( dpkg -l libusb-1.0-0-dev|grep -c "^ii  libusb-1.0-0-dev" ) -ne 0 ]; then 
+  echo "[OK]"
+ else
+  echo "[FAILED]"
+  exit 1
+ fi
+fi
 # Install libnetfilter-queue-dev
+if [ $(cat /etc/os-release |grep -c -i kali ) -ne 0 ]; then 
 if [ $(dpkg -l libnetfilter-queue-dev|grep -c "^ii  libnetfilter-queue-dev") -eq 0 ]; then
  printf "%-50s" "Installing libnetfilter-queue-dev"
  apt-get update -y -qq > /dev/null 2>&1  && apt-get install -y -qq wget >/dev/null 2>&1
@@ -64,6 +92,7 @@ if [ $(dpkg -l libnetfilter-queue-dev|grep -c "^ii  libnetfilter-queue-dev") -eq
   echo "[FAILED]"
   exit 1
  fi
+fi
 fi
 #--------------------------------------------------------
 # Download bettercap version 2.32.0
